@@ -4,8 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
 		entry: {
-			app: './src/index.js',
-			bascket: './src/bascket.js',
+			basket: './src/basket.js',
 			user: './src/user.js'
 		},
 		plugins: [new CleanWebpackPlugin()],
