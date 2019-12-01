@@ -7,7 +7,6 @@
  * 
  * Load and create basic modules in our system 
  * 
- * @ngInject
  **************************************************************************/
 
 const DISPATCHER_BASKET_PATH = '/app/modules/basket';
@@ -19,7 +18,11 @@ const STATE_READY = 'ready';
 
 const STORAGE_KEY = '/app/modules/basket';
 
-
+/*
+ * Load module
+ * 
+ * @ngInject
+ */
 function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 
 	/**
