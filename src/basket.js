@@ -1,3 +1,11 @@
+var DISPATCHER_BASKET_PATH = '/app/modules/basket';
+var DISPATCHER_BASKET_ITEMS_PATH = '/app/modules/basket/items';
+
+var STATE_DIRTY = 'dirty';
+var STATE_LOADING = 'loading';
+var STATE_READY = 'ready';
+
+var STORAGE_KEY = '/app/modules/basket';
 /***************************************************************************
  * Name: basket
  * Version: 0.1.0
@@ -8,19 +16,8 @@
  * Load and create basic modules in our system 
  * 
  **************************************************************************/
-
-const DISPATCHER_BASKET_PATH = '/app/modules/basket';
-const DISPATCHER_BASKET_ITEMS_PATH = '/app/modules/basket/items';
-
-const STATE_DIRTY = 'dirty';
-const STATE_LOADING = 'loading';
-const STATE_READY = 'ready';
-
-const STORAGE_KEY = '/app/modules/basket';
-
 /*
- * Load module
- * 
+ * Creates and load modules
  * @ngInject
  */
 function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
@@ -31,34 +28,55 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 	 * @name $basket
 	 */
 	class Bascket {
-		
+
+		/**
+		 * Creates new instance of the object
+		 */
 		constructor(){
 			this.autoSave = true;
 			this.load();
 		}
 
-		setProperty (key, value){
+		/**
+		 * Sets property
+		 */
+		setProperty(key, value){
 			this.data[key] = value;
 			this.setState(STATE_DIRTY);
 		}
 
-		setTitle (title){
+		/**
+		 * Sets title
+		 */
+		setTitle(title){
 			this.setProperty('title', title);
 		}
 
-		setPhone (phone){
+		/**
+		 * Sets phone number
+		 */
+		setPhone(phone){
 			this.setProperty('phone', phone);
 		}
 
-		setFullName (fullName){
+		/**
+		 * Sets full name
+		 */
+		setFullName(fullName){
 			this.setProperty('full_name', fullName);
 		}
 
-		setEmail (email){
+		/**
+		 * Sets Email
+		 */
+		setEmail(email){
 			this.setProperty('email', email);
 		}
 
-		setAddress (address){
+		/**
+		 * Sets address
+		 */
+		setAddress(address){
 			this.setProperty('address', address);
 		}
 
@@ -72,22 +90,25 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 * - count
 		 * 
 		 * @memberof $basket
-		 * @param {Object} newItem to add into the basket
+		 * @param {Object} item to add into the basket
 		 */
-		addItem (newItem) {
-			var basketItem = this.getItem(newItem.item_type, newItem.item_id);
+		addItem(item) {
+			if(item.count < 1){
+				return;
+			}
+			var basketItem = this.findItem(item);
 			if(basketItem){
-				basketItem.count += newItem.count || 1;
+				basketItem.count += item.count || 1;
 				$dispatcher.dispatch(DISPATCHER_BASKET_ITEMS_PATH, {
 					type: 'update',
 					values: [basketItem]
 				});
 			} else {
-				basketItem = newItem;
-				this.data.items.push(newItem);
+				var cloneItem = _.cloneDeep(item);
+				this.data.items.push(cloneItem);
 				$dispatcher.dispatch(DISPATCHER_BASKET_ITEMS_PATH, {
 					type: 'create',
-					values: [basketItem]
+					values: [cloneItem]
 				});
 			}
 			this.setState(STATE_DIRTY);
@@ -100,18 +121,41 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 * @param {string} itemType of the item
 		 * @param {int} itemId of the item
 		 */
-		removeItem (itemType, itemId) {
-			var basketItem = this.getItem(itemType, itemId);
+		removeItem(index) {
+			var basketItem = this.data.items[index];
 			if(!basketItem){
 				return;
 			}
 			var index = this.data.items.indexOf(basketItem);
-			this.items.splice(index, 1);
+			this.data.items.splice(index, 1);
 			$dispatcher.dispatch(DISPATCHER_BASKET_ITEMS_PATH, {
 				type: 'delete',
 				values: [basketItem]
 			});
 			this.setState(STATE_DIRTY);
+		}
+
+		/**
+		 * Sets item count
+		 * 
+		 * @memberof $basket
+		 * @param {string} itemType of an item
+		 * @param {int} itemId of an item
+		 * @return the related item or undefined
+		 */
+		setItemCount(index, count) {
+			if(count < 1){
+				// remove basket item
+				this.removeItem(index);
+			} else {
+				// update
+				var basketItem = this.getItem(index);
+				basketItem.count = count;
+				$dispatcher.dispatch(DISPATCHER_BASKET_ITEMS_PATH, {
+					type: 'update',
+					values: [basketItem]
+				});
+			}
 		}
 
 		/**
@@ -122,11 +166,51 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 * @param {int} itemId of an item
 		 * @return the related item or undefined
 		 */
-		getItem (itemType, itemId) {
-			return _.find(this.data.items, function(item){
-				return item.item_id == itemId && item.item_type == itemType;
+		getItem(index) {
+			return this.data.items[index];
+		}
+
+		/**
+		 * Finds item from the basket
+		 * 
+		 * @memberof $basket
+		 * @param {string} itemType of an item
+		 * @param {int} itemId of an item
+		 * @return the related item or undefined
+		 */
+		findItem(item) {
+			return _.find(this.data.items, function(basketItem){
+				if(basketItem.item_id != item.item_id || basketItem.item_type != item.item_type){
+					return false;
+				}
+				var flag = true;
+				_.forEach(basketItem.metas, function(value, key){
+					if(!_.isEqual(item.metas[key], value)){
+						flag = false;
+					}
+				});
+				return flag;
 			});
-		};
+		}
+
+		/**
+		 * Gets index of the item
+		 * 
+		 * @memberof $basket
+		 * @param {string} itemType of an item
+		 * @param {int} itemId of an item
+		 * @return the related item or undefined
+		 */
+		indexOf(item) {
+			if(_.isUndefined(item)){
+				return -1;
+			}
+			var index = this.data.items.indexOf(item);
+			if(index >= 0){
+				return index;
+			}
+			return this.indexOf(this.findItem(item));
+		}
 
 		/**
 		 * Gets items from the basket
@@ -134,9 +218,9 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 * @memberof $basket
 		 * @return all items of the basket
 		 */
-		getItems () {
+		getItems() {
 			return _.clone(this.data.items);
-		};
+		}
 
 		/**
 		 * Sets a meta value
@@ -145,7 +229,7 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 * @params {string} key of the meta
 		 * @params {string} value of the meta
 		 */
-		setMeta (key, value) {
+		setMeta(key, value) {
 			this.data.metas[key] = value;
 			// TODO: maos, 2019: fire meta are changed
 			this.setState(STATE_DIRTY);
@@ -158,7 +242,7 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 * @params {string} key of the meta
 		 * @return value of the meta
 		 */
-		getMeta (key) {
+		getMeta(key) {
 			return this.data.metas[key];
 		}
 
@@ -173,7 +257,7 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 * @memberof $basket
 		 * @return the number of items from the basket
 		 */
-		getCount () {
+		getCount() {
 			var count = 0;
 			_.forEach(this.data.items, function(item){
 				count += item.count;
@@ -186,7 +270,7 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 * 
 		 * @memberof $basket
 		 */
-		clear () {
+		clear() {
 			var oldValue = this.data;
 			this.data = {
 					metas: {},
@@ -204,18 +288,18 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 * 
 		 * @memberof $basket
 		 */
-		save () {
+		save() {
 			this.setState(STATE_LOADING);
 			$storage.put(STORAGE_KEY, this.data);
 			this.setState(STATE_READY);
-		};
+		}
 
 		/**
 		 * Loads the basket data from local storage
 		 * 
 		 * @memberof $basket
 		 */
-		load () {
+		load() {
 			this.setState(STATE_LOADING);
 			var data = $storage.get(STORAGE_KEY) ||  {
 				title: '',
@@ -239,7 +323,7 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 			}
 
 			this.setState(STATE_READY);
-		};
+		}
 
 		/**
 		 * Gets current state of the service
@@ -248,9 +332,9 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 * @memberof $basket
 		 * @return state of the service
 		 */
-		getState () {
+		getState() {
 			return this.state;
-		};
+		}
 
 		/**
 		 * Sets the state of the service
@@ -260,7 +344,7 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 * @memberof $basket
 		 * @param {string} state of the service
 		 */
-		setState (state) {
+		setState(state) {
 			this.state = state;
 			$dispatcher.dispatch(DISPATCHER_BASKET_PATH,{
 				type: 'update',
@@ -282,9 +366,9 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 * @memberof $basket
 		 * @param {boolean} autoSave to enable the auto save
 		 */
-		setAutoSave (autoSave) {
+		setAutoSave(autoSave) {
 			this.autoSave = autoSave;
-		};
+		}
 
 		/**
 		 * Checks if the service is in autosave mode 
@@ -294,7 +378,7 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 */
 		isAutoSave() {
 			return this.autoSave;
-		};
+		}
 
 		/**
 		 * Creates and return the order
@@ -386,15 +470,6 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
  * using the extra injector() added to JQuery/jqLite elements.
  **************************************************************************/
 angular
-.element(document)
-.injector()
-.invoke(loadModule);
-
-
-
-
-
-
-
-
-
+	.element(document)
+	.injector()
+	.invoke(loadModule);

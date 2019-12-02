@@ -16,6 +16,6 @@ Where version is a version number (e.g. 0.1.0) and the module is module name (e.
 
 As an example to load bascket:
 
-	https://cdn.jsdelivr.net/gh/viraweb123/module@0.1.0/dist/basket.min.js
+	https://cdn.jsdelivr.net/gh/viraweb123/modules@0.1.2/dist/basket.min.js
 
 For more information see [jsSeliver](https://www.jsdelivr.com/?docs=gh)
