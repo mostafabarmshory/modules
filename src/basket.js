@@ -408,7 +408,7 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 				_.forEach(ctrl.data.metas, function(value, key){
 					var job = $http({
 						method : 'POST',
-						url: '/api/v2/shop/orders/' + order.secureId + '/metas',
+						url: '/api/v2/shop/orders/' + order.secureId + '/metafields',
 						params: {
 							key: key,
 							value: value
