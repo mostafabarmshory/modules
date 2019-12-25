@@ -15,12 +15,12 @@ function loadModule($window, $app) {
 			this.state = 'ready';
 		}
 
-		login(){
-			$app.logout();
+		login(credential){
+			return $app.login(credential);
 		}
 
 		logout(){
-			// TODO:
+			return $app.logout();
 		}
 
 		submit(){
