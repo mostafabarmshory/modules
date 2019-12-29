@@ -230,6 +230,9 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 * @params {string} value of the meta
 		 */
 		setMeta(key, value) {
+			if(!this.data.metas){
+				this.data.metas = {};
+			}
 			this.data.metas[key] = value;
 			// TODO: maos, 2019: fire meta are changed
 			this.setState(STATE_DIRTY);
@@ -309,7 +312,7 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 				email: '',
 				description: '',
 				customer_id:  0,
-				meta:{},
+				metas:{},
 				items: []
 			};
 			this.data = data;
