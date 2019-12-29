@@ -458,11 +458,12 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 	}
 
 	// Load global service
+	var moduleDescription = {
+			type:'create',
+			values: ['$basket'],
+	};
 	$window.$basket = new Bascket();
-	$dispatcher.dispatch('/app/modules', {
-		type:'create',
-		values: ['$basket'],
-	});
+	$dispatcher.dispatch('/app/modules', moduleDescription);
 }
 
 /***************************************************************************
@@ -473,6 +474,6 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
  * using the extra injector() added to JQuery/jqLite elements.
  **************************************************************************/
 angular
-	.element(document)
-	.injector()
-	.invoke(loadModule);
+.element(document)
+.injector()
+.invoke(loadModule);
