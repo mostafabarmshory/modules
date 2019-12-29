@@ -1,11 +1,11 @@
 [{
 	"title": "AMH User",
 	"description": "User management.",
-	"url": "https://cdn.jsdelivr.net/gh/viraweb123/modules@0.1.2/dist/user.min.js",
+	"url": "https://cdn.jsdelivr.net/gh/viraweb123/modules@0.1/dist/user.min.js",
 	"type": "js"
 },{
 	"title": "Basket",
 	"description": "Manage system basket",
-	"url": "https://cdn.jsdelivr.net/gh/viraweb123/modules@0.1.2/dist/basket.min.js",
+	"url": "https://cdn.jsdelivr.net/gh/viraweb123/modules@0.1/dist/basket.min.js",
 	"type": "js"
 }]
