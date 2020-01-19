@@ -20,7 +20,7 @@ var STORAGE_KEY = '/app/modules/basket';
  * Creates and load modules
  * @ngInject
  */
-function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
+function loadModule($window, $dispatcher, $http, $q) {
 
 	/**
 	 * Basket service
@@ -293,7 +293,8 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 */
 		save() {
 			this.setState(STATE_LOADING);
-			$storage.put(STORAGE_KEY, this.data);
+			var dataStr = JSON.stringify(this.data);
+			localStorage.setItem(STORAGE_KEY, dataStr);
 			this.setState(STATE_READY);
 		}
 
@@ -304,7 +305,7 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		 */
 		load() {
 			this.setState(STATE_LOADING);
-			var data = $storage.get(STORAGE_KEY) ||  {
+			var data =  {
 				title: '',
 				full_name: '',
 				phone: '',
@@ -315,16 +316,11 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 				metas:{},
 				items: []
 			};
-			this.data = data;
-
-			// Load user info
-			var account = $app.getProperty('account');
-			if(!account.anonymous){
-				data.full_name = account.profile.first_name + account.profile.lastName;
-				data.email = account.profile.email;
-				// TODO: maso, 2019: load other information from current account
+			var dataStr = localStorage.getItem(STORAGE_KEY);
+			if(dataStr){
+			    data = JSON.parse(dataStr);
 			}
-
+			this.data = data;
 			this.setState(STATE_READY);
 		}
 
