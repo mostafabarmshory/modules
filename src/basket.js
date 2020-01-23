@@ -81,6 +81,13 @@ function loadModule($window, $dispatcher, $storage, $app, $http, $q) {
 		}
 
 		/**
+		 * Sets description
+		 */
+		setDescription(description){
+			this.setProperty('description', description);
+		}
+
+		/**
 		 * Adds and item into the basket
 		 * 
 		 * Following attribute is required for items
