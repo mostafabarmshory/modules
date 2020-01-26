@@ -243,6 +243,7 @@ function loadModule($window, $dispatcher, $http, $q) {
 			this.data.metas[key] = value;
 			// TODO: maos, 2019: fire meta are changed
 			this.setState(STATE_DIRTY);
+			return this;
 		}
 
 		/**
@@ -254,6 +255,19 @@ function loadModule($window, $dispatcher, $http, $q) {
 		 */
 		getMeta(key) {
 			return this.data.metas[key];
+		}
+
+
+
+		/**
+		 * Clears all meta from the basket
+		 * 
+		 * @memberof $basket
+		 * @return the basket
+		 */
+		clearMeta() {
+			this.data.metas = {};
+			return this;
 		}
 
 
