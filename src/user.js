@@ -1,3 +1,5 @@
+import MbModule from './module.js';
+
 /***************************************************************************
  * Module loader
  * 
@@ -9,7 +11,7 @@ function loadModule($window, $app) {
 	/**
 	 * User mangement system
 	 */
-	class UserManager{
+	class UserManager extends MbModule{
 
 		constructor(){
 			this.state = 'ready';
@@ -31,8 +33,8 @@ function loadModule($window, $app) {
 	/*
 	 * Contribute the service
 	 */
-	$window.$wbUser = new UserManager();
-	// $mb.exportAs('$user', new UserManager());
+	$window.$userManager = new UserManager();
+	// $mb.exportAs('$userManager', new UserManager());
 }
 
 /***************************************************************************
