@@ -1,4 +1,4 @@
-import MbModule from './module.js';
+//import MbModule from './module.js';
 
 const DISPATCHER_BASKET_PATH = '/app/modules/basket';
 const DISPATCHER_BASKET_ITEMS_PATH = '/app/modules/basket/items';
@@ -29,7 +29,7 @@ function loadModule($window, $dispatcher, $http, $q) {
 	 * 
 	 * @name $basket
 	 */
-	class Bascket extends MbModule {
+	class Bascket {
 
 		/**
 		 * Creates new instance of the object
