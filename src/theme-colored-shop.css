@@ -1,0 +1,44 @@
+#shop_orders_list md-list-item#new {
+	background-color: yellow;
+}
+
+#shop_orders_list md-list-item#check {
+	background-color: red;
+}
+
+#shop_orders_list md-list-item#waiting {
+	background-color: blue;
+}
+
+#shop_orders_list md-list-item#schedule {
+	background-color: blue;
+}
+
+#shop_orders_list md-list-item#fail {
+	background-color: red;
+}
+
+#shop_orders_list md-list-item#close {
+}
+
+#shop_orders_list md-list-item#workshop-check {
+	background-color: green;
+}
+
+#shop_orders_list md-list-item#in-queue {
+	background-color: green;
+}
+
+#shop_orders_list md-list-item#repairing {
+	background-color: red;
+}
+
+#shop_orders_list md-list-item#giving-back {
+}
+
+#shop_orders_list md-list-item#archived {
+}
+
+#shop_orders_list md-list-item#fixed {
+}
+
