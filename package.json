@@ -1,6 +1,6 @@
 {
 	"name": "modules",
-	"version": "0.2.3",
+	"version": "0.2.4",
 	"description": "Common modules of SPAs",
 	"private": true,
 	"directories": {
