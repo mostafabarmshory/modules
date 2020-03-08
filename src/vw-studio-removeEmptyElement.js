@@ -1,14 +1,5 @@
 //import MbModule from './module.js';
 
-const DISPATCHER_BASKET_PATH = '/app/modules/basket';
-const DISPATCHER_BASKET_ITEMS_PATH = '/app/modules/basket/items';
-
-const STATE_DIRTY = 'dirty';
-const STATE_LOADING = 'loading';
-const STATE_READY = 'ready';
-
-const STORAGE_KEY = '/app/modules/basket';
-
 const ANCHOR_TOOLBAR_COMMON = 'amh.workbench.editor.weburger.toolbar#common';
 
 
