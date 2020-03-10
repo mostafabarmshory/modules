@@ -14,11 +14,11 @@ const ANCHOR_TOOLBAR_COMMON = 'amh.workbench.editor.weburger.toolbar#common';
  * 
  **************************************************************************/
 function isEmpmtyString(str) {
-	if (_.isString(str)) {
+	if (!_.isString(str)) {
 		return false;
 	}
-	var trStr = _.trim(str);
-	return trStr.length() === 0;
+	return _.trim(str)
+		.length() === 0;
 }
 function removeEmptyWidget(root) {
 	var toDelete = [];
