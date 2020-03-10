@@ -33,6 +33,9 @@ function decodeHTMLEntities (text) {
 }
 
 function isEmpmtyString(str) {
+	if(_.isUndefined(str)){
+		return true;
+	}
 	if (!_.isString(str)) {
 		return false;
 	}
