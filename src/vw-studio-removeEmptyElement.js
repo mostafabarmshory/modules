@@ -17,8 +17,7 @@ function isEmpmtyString(str) {
 	if (!_.isString(str)) {
 		return false;
 	}
-	return _.trim(str)
-		.length() === 0;
+	return str.trim().length === 0;
 }
 function removeEmptyWidget(root) {
 	var toDelete = [];
