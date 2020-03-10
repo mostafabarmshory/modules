@@ -13,12 +13,14 @@ const ANCHOR_TOOLBAR_COMMON = 'amh.workbench.editor.weburger.toolbar#common';
  * Finds all empty widgets from the current editor and remove them all.
  * 
  **************************************************************************/
+
 function isEmpmtyString(str) {
 	if (!_.isString(str)) {
 		return false;
 	}
-	return str.trim().length === 0;
+	return unescape(str).trim().length === 0;
 }
+
 function removeEmptyWidget(root) {
 	var toDelete = [];
 	var count = 0;
