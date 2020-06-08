@@ -10,6 +10,7 @@ module.exports = {
 	entry: {
 		basket: './src/basket.js',
 		user: './src/user.js',
+		'collection-builder': './src/collection-builder.js',
 		'vw-studio-removeEmptyElement': './src/vw-studio-removeEmptyElement.js',
 	},
 	plugins: [
