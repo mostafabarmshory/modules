@@ -1,4 +1,4 @@
-import MbModule from './module.js';
+//import MbModule from './module.js';
 
 /***************************************************************************
  * Module loader
@@ -11,21 +11,21 @@ function loadModule($window, $app) {
 	/**
 	 * User mangement system
 	 */
-	class UserManager extends MbModule{
+	class UserManager {
 
-		constructor(){
+		constructor() {
 			this.state = 'ready';
 		}
 
-		login(credential){
+		login(credential) {
 			return $app.login(credential);
 		}
 
-		logout(){
+		logout() {
 			return $app.logout();
 		}
 
-		submit(){
+		submit() {
 			// TODO: 
 		}
 	};
@@ -45,9 +45,9 @@ function loadModule($window, $app) {
  * using the extra injector() added to JQuery/jqLite elements.
  **************************************************************************/
 angular
-.element(document)
-.injector()
-.invoke(loadModule);
+	.element(document)
+	.injector()
+	.invoke(loadModule);
 
 
 
