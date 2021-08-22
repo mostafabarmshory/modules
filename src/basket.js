@@ -20,7 +20,7 @@ var STORAGE_KEY = '/app/modules/basket';
  * Creates and load modules
  * @ngInject
  */
-function loadModule($window, $dispatcher, $http, $q) {
+function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike) {
 
 	/**
 	 * Basket service
@@ -400,7 +400,7 @@ function loadModule($window, $dispatcher, $http, $q) {
 					var job = $http({
 						method : 'POST',
 						url: '/api/v2/shop/orders/' + order.secureId + '/items',
-						params: item,
+						data: $httpParamSerializerJQLike(item),
 						headers: {
 							'Content-Type': 'application/x-www-form-urlencoded'
 						}
@@ -415,10 +415,10 @@ function loadModule($window, $dispatcher, $http, $q) {
 					var job = $http({
 						method : 'POST',
 						url: '/api/v2/shop/orders/' + order.secureId + '/metafields',
-						params: {
+						data: $httpParamSerializerJQLike({
 							key: key,
 							value: value
-						},
+						}),
 						headers: {
 							'Content-Type': 'application/x-www-form-urlencoded'
 						}
@@ -435,7 +435,13 @@ function loadModule($window, $dispatcher, $http, $q) {
 			return $http({
 				method : 'POST',
 				url: '/api/v2/shop/orders',
-				params: this.data,
+				data: $httpParamSerializerJQLike({
+					title: this.data.title,
+					description: this.data.description,
+					phone: this.data.phone,
+					full_name: this.data.fullname,
+					address: this.data.address
+				}),
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded'
 				}
