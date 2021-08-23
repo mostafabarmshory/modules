@@ -439,7 +439,7 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 					title: this.data.title,
 					description: this.data.description,
 					phone: this.data.phone,
-					full_name: this.data.fullname,
+					full_name: this.data.full_name,
 					address: this.data.address
 				}),
 				headers: {
