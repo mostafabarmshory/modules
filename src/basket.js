@@ -1,11 +1,13 @@
-var DISPATCHER_BASKET_PATH = '/app/modules/basket';
-var DISPATCHER_BASKET_ITEMS_PATH = '/app/modules/basket/items';
+//import MbModule from './module.js';
 
-var STATE_DIRTY = 'dirty';
-var STATE_LOADING = 'loading';
-var STATE_READY = 'ready';
+const DISPATCHER_BASKET_PATH = '/app/modules/basket';
+const DISPATCHER_BASKET_ITEMS_PATH = '/app/modules/basket/items';
 
-var STORAGE_KEY = '/app/modules/basket';
+const STATE_DIRTY = 'dirty';
+const STATE_LOADING = 'loading';
+const STATE_READY = 'ready';
+
+const STORAGE_KEY = '/app/modules/basket';
 /***************************************************************************
  * Name: basket
  * Version: 0.1.0
@@ -32,7 +34,7 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 		/**
 		 * Creates new instance of the object
 		 */
-		constructor(){
+		constructor() {
 			this.autoSave = true;
 			this.load();
 		}
@@ -40,7 +42,7 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 		/**
 		 * Sets property
 		 */
-		setProperty(key, value){
+		setProperty(key, value) {
 			this.data[key] = value;
 			this.setState(STATE_DIRTY);
 		}
@@ -48,42 +50,42 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 		/**
 		 * Sets title
 		 */
-		setTitle(title){
+		setTitle(title) {
 			this.setProperty('title', title);
 		}
 
 		/**
 		 * Sets phone number
 		 */
-		setPhone(phone){
+		setPhone(phone) {
 			this.setProperty('phone', phone);
 		}
 
 		/**
 		 * Sets full name
 		 */
-		setFullName(fullName){
+		setFullName(fullName) {
 			this.setProperty('full_name', fullName);
 		}
 
 		/**
 		 * Sets Email
 		 */
-		setEmail(email){
+		setEmail(email) {
 			this.setProperty('email', email);
 		}
 
 		/**
 		 * Sets address
 		 */
-		setAddress(address){
+		setAddress(address) {
 			this.setProperty('address', address);
 		}
 
 		/**
 		 * Sets description
 		 */
-		setDescription(description){
+		setDescription(description) {
 			this.setProperty('description', description);
 		}
 
@@ -100,11 +102,11 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 		 * @param {Object} item to add into the basket
 		 */
 		addItem(item) {
-			if(item.count < 1){
+			if (item.count < 1) {
 				return;
 			}
 			var basketItem = this.findItem(item);
-			if(basketItem){
+			if (basketItem) {
 				basketItem.count += item.count || 1;
 				$dispatcher.dispatch(DISPATCHER_BASKET_ITEMS_PATH, {
 					type: 'update',
@@ -130,7 +132,7 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 		 */
 		removeItem(index) {
 			var basketItem = this.data.items[index];
-			if(!basketItem){
+			if (!basketItem) {
 				return;
 			}
 			var index = this.data.items.indexOf(basketItem);
@@ -151,7 +153,7 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 		 * @return the related item or undefined
 		 */
 		setItemCount(index, count) {
-			if(count < 1){
+			if (count < 1) {
 				// remove basket item
 				this.removeItem(index);
 			} else {
@@ -186,13 +188,13 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 		 * @return the related item or undefined
 		 */
 		findItem(item) {
-			return _.find(this.data.items, function(basketItem){
-				if(basketItem.item_id != item.item_id || basketItem.item_type != item.item_type){
+			return _.find(this.data.items, function(basketItem) {
+				if (basketItem.item_id != item.item_id || basketItem.item_type != item.item_type) {
 					return false;
 				}
 				var flag = true;
-				_.forEach(basketItem.metas, function(value, key){
-					if(!_.isEqual(item.metas[key], value)){
+				_.forEach(basketItem.metas, function(value, key) {
+					if (!_.isEqual(item.metas[key], value)) {
 						flag = false;
 					}
 				});
@@ -209,11 +211,11 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 		 * @return the related item or undefined
 		 */
 		indexOf(item) {
-			if(_.isUndefined(item)){
+			if (_.isUndefined(item)) {
 				return -1;
 			}
 			var index = this.data.items.indexOf(item);
-			if(index >= 0){
+			if (index >= 0) {
 				return index;
 			}
 			return this.indexOf(this.findItem(item));
@@ -237,12 +239,13 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 		 * @params {string} value of the meta
 		 */
 		setMeta(key, value) {
-			if(!this.data.metas){
+			if (!this.data.metas) {
 				this.data.metas = {};
 			}
 			this.data.metas[key] = value;
 			// TODO: maos, 2019: fire meta are changed
 			this.setState(STATE_DIRTY);
+			return this;
 		}
 
 		/**
@@ -254,6 +257,17 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 		 */
 		getMeta(key) {
 			return this.data.metas[key];
+		}
+
+		/**
+		 * Clears all meta from the basket
+		 * 
+		 * @memberof $basket
+		 * @return the basket
+		 */
+		clearMeta() {
+			this.data.metas = {};
+			return this;
 		}
 
 
@@ -269,7 +283,7 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 		 */
 		getCount() {
 			var count = 0;
-			_.forEach(this.data.items, function(item){
+			_.forEach(this.data.items, function(item) {
 				count += item.count;
 			});
 			return count;
@@ -283,8 +297,8 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 		clear() {
 			var oldValue = this.data;
 			this.data = {
-					metas: {},
-					items: []
+				metas: {},
+				items: []
 			};
 			$dispatcher.dispatch(DISPATCHER_BASKET_ITEMS_PATH, {
 				type: 'delete',
@@ -312,20 +326,20 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 		 */
 		load() {
 			this.setState(STATE_LOADING);
-			var data =  {
+			var data = {
 				title: '',
 				full_name: '',
 				phone: '',
 				address: '',
 				email: '',
 				description: '',
-				customer_id:  0,
-				metas:{},
+				customer_id: 0,
+				metas: {},
 				items: []
 			};
 			var dataStr = localStorage.getItem(STORAGE_KEY);
-			if(dataStr){
-			    data = JSON.parse(dataStr);
+			if (dataStr) {
+				data = JSON.parse(dataStr);
 			}
 			this.data = data;
 			this.setState(STATE_READY);
@@ -352,13 +366,13 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 		 */
 		setState(state) {
 			this.state = state;
-			$dispatcher.dispatch(DISPATCHER_BASKET_PATH,{
+			$dispatcher.dispatch(DISPATCHER_BASKET_PATH, {
 				type: 'update',
 				keys: ['state'],
 				values: [state]
 			});
 			// save if the state is derty
-			if(this.isAutoSave() && state == STATE_DIRTY) {
+			if (this.isAutoSave() && state == STATE_DIRTY) {
 				this.save();
 			}
 		}
@@ -394,11 +408,11 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 		createOrder() {
 			var order;
 			var ctrl = this;
-			function putItems(){
+			function putItems() {
 				var jobs = [];
-				_.forEach(ctrl.data.items, function(item){
+				_.forEach(ctrl.data.items, function(item) {
 					var job = $http({
-						method : 'POST',
+						method: 'POST',
 						url: '/api/v2/shop/orders/' + order.secureId + '/items',
 						data: $httpParamSerializerJQLike(item),
 						headers: {
@@ -409,11 +423,11 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 				})
 				return $q.all(jobs);
 			}
-			function putMetas(){
+			function putMetas() {
 				var jobs = [];
-				_.forEach(ctrl.data.metas, function(value, key){
+				_.forEach(ctrl.data.metas, function(value, key) {
 					var job = $http({
-						method : 'POST',
+						method: 'POST',
 						url: '/api/v2/shop/orders/' + order.secureId + '/metafields',
 						data: $httpParamSerializerJQLike({
 							key: key,
@@ -428,51 +442,43 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
 				return $q.all(jobs);
 			}
 
-			if(!this.data.description){
-				this.data.description = 'برند: ' + this.getMeta('brand') + '-' + 
-				'مدل: ' + this.getMeta('model');
-			}
 			return $http({
-				method : 'POST',
+				method: 'POST',
 				url: '/api/v2/shop/orders',
 				data: $httpParamSerializerJQLike({
 					title: this.data.title,
 					description: this.data.description,
 					phone: this.data.phone,
-					full_name: this.data.fullname,
+					full_name: this.data.full_name,
 					address: this.data.address
 				}),
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded'
 				}
 			})
-			.then(function (response) {
-				order = response.data;
-				return $q.all([putItems(), putMetas()]);
-			}, function(error){
-				// TODO: maso, 2019: handle the error
-				error = {
+				.then(function(response) {
+					order = response.data;
+					return $q.all([putItems(), putMetas()]);
+				}, function(error) {
+					// TODO: maso, 2019: handle the error
+					error = {
 						message: 'fail to add order items/meta',
 						error: error
-				};
-				log.error(error);
-				throw error;
-			})
-			.then(function(){
-				return order;
-			}, function(error){
-				throw error;
-			});
+					};
+					log.error(error);
+					throw error;
+				})
+				.then(function() {
+					return order;
+				}, function(error) {
+					throw error;
+				});
 		}
 	}
 
-	// Load global service
-	var moduleDescription = {
-			type:'create',
-			values: ['$basket'],
-	};
-	$window.$basket = new Bascket();
-	$dispatcher.dispatch('/app/modules', moduleDescription);
+	var $basket = new Bascket();
+	$window.$basket = $basket;
+	// $mb.exportAs('$user', new UserManager());
 }
 
 /***************************************************************************
@@ -483,6 +489,6 @@ function loadModule($window, $dispatcher, $http, $q, $httpParamSerializerJQLike)
  * using the extra injector() added to JQuery/jqLite elements.
  **************************************************************************/
 angular
-.element(document)
-.injector()
-.invoke(loadModule);
+	.element(document)
+	.injector()
+	.invoke(loadModule);
